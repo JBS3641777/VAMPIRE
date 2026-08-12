@@ -63,3 +63,16 @@ Alternative: use the `hf` CLI (recommended for Spaces):
 ```
 
 I will NOT push on your behalf without explicit confirmation and the token.
+
+## Agent: Jakals (added to HTML)
+
+I added an "Agent Jakals" panel to `SaaS151_PROOF_NC-21.html` that lets you configure:
+
+- Agent name (default: Jakals)
+- License / credentials (Harvard / UK-Sterling / Royal)
+- Skills / notes (free text)
+- Worker count (1–999)
+
+The page stores agent settings in `localStorage` and produces a JSON-LD block (in `<head>` with id `agentJakalsJsonLd`) when you click "Apply Agent". This is useful for search engines and programmatic consumption.
+
+Workflow: update the fields in the page, click "Apply Agent" to embed JSON-LD and display status. Click "Save Locally" to persist the settings in your browser.

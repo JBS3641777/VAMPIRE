@@ -768,6 +768,27 @@
             font-weight: 600;
             font-family: 'Courier New', monospace;
         }
+
+        /* Agent panel */
+        .agent-panel {
+            background: linear-gradient(135deg, #061226, #0b1f2b);
+            border: 2px solid #00ccff;
+            border-radius: 12px;
+            padding: 18px;
+            margin: 15px 0;
+            color: #88ddff;
+            font-family: 'Courier New', monospace;
+        }
+
+        .agent-panel h3 {
+            margin-bottom: 8px;
+            color: #00ffaa;
+        }
+
+        .agent-row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+        .agent-field { flex:1; min-width:180px; }
+        .agent-field input[type="number"] { width:110px; }
+        .agent-actions { margin-top:10px; display:flex; gap:10px; }
         
         @media (max-width: 480px) {
             .visa-header h1 { font-size: 1.8rem; }
@@ -1035,6 +1056,40 @@
             </div>
         </div>
         
+        <!-- AGENT: Jakals — International Business Law skills -->
+        <div class="agent-panel" id="agentPanel">
+            <h3>Agent: Jakals — Licensed International Business Law</h3>
+            <div class="agent-row">
+                <div class="agent-field">
+                    <label>Agent name</label>
+                    <div><input type="text" id="agentName" value="Jakals" /></div>
+                </div>
+                <div class="agent-field">
+                    <label>License / Credentials</label>
+                    <div>
+                        <select id="agentLicense">
+                            <option>Harvard (Private Legal)</option>
+                            <option>UK-Sterling Legal</option>
+                            <option>Royal Chartered</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="agent-field">
+                    <label>Worker count (1–999)</label>
+                    <div><input type="number" id="agentWorkers" min="1" max="999" value="1" /></div>
+                </div>
+            </div>
+            <div style="margin-top:8px;">
+                <label>Skills / Notes</label>
+                <div><textarea id="agentSkills" rows="3" style="width:100%;">International Business Law, Corporate, Family, Royal Protocol, Compliance</textarea></div>
+            </div>
+            <div class="agent-actions">
+                <button class="power-btn" id="applyAgentBtn">Apply Agent</button>
+                <button class="withdraw-btn" id="saveAgentBtn">Save Locally</button>
+                <div id="agentStatus" style="align-self:center;color:#ffd700;font-weight:700;"></div>
+            </div>
+        </div>
+
         <!-- Anti-Theft Disclaimer -->
         <div class="anti-theft">
             ⚠️ ANTI-THEFT VALUE ON COPYRIGHT CODE PUBLIC FILES · ALL CONVERTED TO HTML · 
@@ -1324,6 +1379,78 @@
         })();
     </script>
     
+    <!-- Agent Jakals script: handles UI, validation, JSON-LD export -->
+    <script>
+        (function(){
+            const applyBtn = document.getElementById('applyAgentBtn');
+            const saveBtn = document.getElementById('saveAgentBtn');
+            const status = document.getElementById('agentStatus');
+
+            function loadAgent() {
+                try {
+                    const raw = localStorage.getItem('agentJakals');
+                    if(!raw) return;
+                    const data = JSON.parse(raw);
+                    document.getElementById('agentName').value = data.name || 'Jakals';
+                    document.getElementById('agentLicense').value = data.license || 'Harvard (Private Legal)';
+                    document.getElementById('agentWorkers').value = data.workers || 1;
+                    document.getElementById('agentSkills').value = data.skills || '';
+                    status.textContent = 'Loaded saved agent';
+                } catch(e){ console.warn(e); }
+            }
+
+            function generateJSONLD(data){
+                return {
+                    "@context": "https://schema.org",
+                    "@type": "Person",
+                    "name": data.name,
+                    "jobTitle": "Agent - International Business Law",
+                    "worksFor": {
+                        "@type": "Organization",
+                        "name": "Jakals Legal Services"
+                    },
+                    "description": data.skills,
+                    "memberOf": data.license,
+                    "employeeCount": data.workers
+                };
+            }
+
+            applyBtn.addEventListener('click', ()=>{
+                const name = document.getElementById('agentName').value.trim() || 'Jakals';
+                const license = document.getElementById('agentLicense').value;
+                let workers = parseInt(document.getElementById('agentWorkers').value,10) || 1;
+                if(workers < 1) workers = 1;
+                if(workers > 999) { alert('Workers limit is 999'); workers = 999; document.getElementById('agentWorkers').value = 999; }
+                const skills = document.getElementById('agentSkills').value.trim();
+                const data = { name, license, workers, skills };
+
+                // Insert/update JSON-LD script in page head
+                let node = document.getElementById('agentJakalsJsonLd');
+                if(!node){ node = document.createElement('script'); node.type = 'application/ld+json'; node.id = 'agentJakalsJsonLd'; document.head.appendChild(node); }
+                node.textContent = JSON.stringify(generateJSONLD(data), null, 2);
+
+                // Show status and write to pip output for visibility
+                status.textContent = 'Agent applied: ' + name + ' · workers=' + workers;
+                const pip = document.getElementById('pipOutput');
+                if(pip){ pip.innerHTML += '\n<span style="display:block;color:#00ffaa;">  ✅ Agent applied: ' + name + ' · ' + workers + ' workers</span>'; pip.scrollTop = pip.scrollHeight; }
+                console.log('Agent applied', data);
+            });
+
+            saveBtn.addEventListener('click', ()=>{
+                const name = document.getElementById('agentName').value.trim() || 'Jakals';
+                const license = document.getElementById('agentLicense').value;
+                let workers = parseInt(document.getElementById('agentWorkers').value,10) || 1;
+                if(workers < 1) workers = 1; if(workers > 999) workers = 999;
+                const skills = document.getElementById('agentSkills').value.trim();
+                const data = { name, license, workers, skills };
+                localStorage.setItem('agentJakals', JSON.stringify(data));
+                status.textContent = 'Saved locally';
+            });
+
+            loadAgent();
+        })();
+    </script>
+
     <!-- Embedded ASIC miner profit widget -->
     <iframe src="https://www.asicminervalue.com/widgets/coins/bch-bitcoincash/profit?theme=system&hashrate=99000000000000&power=36.666"
         width="100%"
