@@ -1,0 +1,10 @@
+your-space-name/
+├── app.py                    # Main Gradio application
+├── requirements.txt          # Python dependencies
+├── wrangler.py               # Static Cloudflare Worker placeholder
+├── README.md                 # Space documentation
+├── Dockerfile                # Container with Tesseract + Java
+├── CloudGateway.java         # Java cloud connectivity wrapper
+├── deploy_cloud.sh           # Google Cloud deployment script
+├── auth_config.json          # Authentication configuration
+└── .env.example              # Environment variables template
