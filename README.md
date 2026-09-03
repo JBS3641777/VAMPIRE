@@ -30,3 +30,49 @@ VAMPIRE (Verified Automated Multi-Platform Intelligent Resource Execution) 是�
 - 多角色支持 (public, admin, developer, analyst)
 
 ## 文件结构
+
+## Quick: push to HuggingFace Spaces (instructions)
+
+1. Generate a HF access token with write permissions at https://huggingface.co/settings/tokens
+2. Locally, set token as an environment variable (preferred) or use when prompted by Git:
+
+```bash
+export HF_TOKEN="<your_token_here>"
+```
+
+3. Configure Git remote for the Space (use your username/repo):
+
+```bash
+git remote add hf https://huggingface.co/spaces/<USERNAME>/<REPO>
+# or update origin if cloning from HF
+```
+
+4. Commit and push (when ready). When Git prompts for a password, use the HF token as the password.
+
+```bash
+git add SaaS151_PROOF_NC-21.html README.md
+git commit -m "Sanitize HTML, add ASIC widget iframe, add README with HF push instructions"
+# git push hf main  # DO NOT RUN: only run after you confirm and provide token
+```
+
+Alternative: use the `hf` CLI (recommended for Spaces):
+
+```bash
+# pip install huggingface_hub
+# hf login
+```
+
+I will NOT push on your behalf without explicit confirmation and the token.
+
+## Agent: Jakals (added to HTML)
+
+I added an "Agent Jakals" panel to `SaaS151_PROOF_NC-21.html` that lets you configure:
+
+- Agent name (default: Jakals)
+- License / credentials (Harvard / UK-Sterling / Royal)
+- Skills / notes (free text)
+- Worker count (1–999)
+
+The page stores agent settings in `localStorage` and produces a JSON-LD block (in `<head>` with id `agentJakalsJsonLd`) when you click "Apply Agent". This is useful for search engines and programmatic consumption.
+
+Workflow: update the fields in the page, click "Apply Agent" to embed JSON-LD and display status. Click "Save Locally" to persist the settings in your browser.

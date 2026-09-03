@@ -1,0 +1,9 @@
+k2_driver/
+├── __init__.py
+├── k2_core.py
+├── financial_engine.py
+├── transaction_processor.py
+├── human_interface.py
+├── setup.py
+├── requirements.txt
+└── README.md
